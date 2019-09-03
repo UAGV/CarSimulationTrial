@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include "Simulation.h"
+#include <math.h>
 using namespace std;
 const int simulationTime = 1000; // Seconds
 
@@ -40,21 +41,23 @@ int main(){
 
     script simulationScript{};
     for(int i = 0; i <= simulationTime; i++) {
-        simulationScript.accelerationEvent[i] = 0;
-        simulationScript.breakingEvent[i] = 1;
+        simulationScript.accelerationEvent[i] = abs(sin(i));
+        simulationScript.breakingEvent[i] = abs(cos(i));
     }
 
 
     for(int i = 0; i <= simulationTime; i++){
-        for (int j = 0; j <= 2; j++) {                   // Update position Inertial RF
+        for (int j = 0; j <= 2; j++) {                                                                                  // Update position Inertial RF
             Corsa.location[j] = Corsa.velocity[j] * 1;
         }
-        if(simulationScript.accelerationEvent[i] <= 1 && simulationScript.accelerationEvent[i] > 0){
+
+        if(simulationScript.accelerationEvent[i] <= 1 && simulationScript.accelerationEvent[i] > 0){                    // Check for acceleration
             Corsa.accelerating = true;
         }
-        if(simulationScript.breakingEvent[i] <= 1 && simulationScript.breakingEvent[i] > 0){
+        if(simulationScript.breakingEvent[i] <= 1 && simulationScript.breakingEvent[i] > 0){                            // Check for deceleration
             Corsa.breaking = true;
         }
+
     }
 
 }
