@@ -2,50 +2,88 @@
 using namespace std;
 double currentVel;
 
+class space {
+public:
+    double volume[3];
+    double surfaceFriction;
+};
+
 class car {
 public:
     string color;
-    int numberOfWheels;
-    int numberOfDoors;
-    double location[3];
+    double location[3]; // m
+    double velocity[3]; // m/s
+    double orientation[4]; // Quat
     int numberOfSeats;
+    int occupiedSeats;
     double dryMass;
-    double breakingRate;
-    double distance;
-    car(){
-        location[0] = 0; // x position
+    double breakingForce_max;
+    double accelerationForce_max;
+    bool breaking;
+    bool accelerating;
+
+    car() {
+        occupiedSeats = 0;
+        breaking = false;
+        accelerating = false;
+
+        location[0] = 0; // x position Inertial RF
         location[1] = 0; // y position
         location[2] = 0; // z position
-    }
-    double breakingDistance(double speed){
-        distance = ((1/(dryMass+numberOfSeats)) * breakingRate)/speed;
-        distance = distance * 1000;
-        location[0] = distance;
-        return distance;
+
+        velocity[0] = 0; // x velocity Inertial RF
+        velocity[1] = 0; // y velocity
+        velocity[2] = 0; // z velocity
+
+        orientation[0] = 1; // Scalar Body RF
+        orientation[1] = 0; // x component
+        orientation[2] = 0; // y component
+        orientation[3] = 0; // z component
     }
 };
 
-int main(){
-    car Corsa;
-    Corsa.color = "Red";
-    Corsa.numberOfDoors = 3;
-    Corsa.dryMass = 2534.2;
-    Corsa.numberOfSeats = 5;
-    Corsa.numberOfWheels = 4;
-    Corsa.breakingRate = 2.2;
-    cout << "Enter Corsa Speed in x axis: " << "\n";
-    cin >> currentVel;
-    double distanceTravelled = Corsa.breakingDistance(currentVel);
-    cout << "Distance to a stop: " << distanceTravelled << "km" << "\n";
-    cout << "New position of vehicle: " << Corsa.location[0] << Corsa.location[1] << "\n";
+class script{
+public:
+    int breakingEvent[];
+    int accelerationEvent[];
+    script(){                           // Default script
 
-    car Fiesta;
-    Fiesta.color = "Red";
-    Fiesta.numberOfDoors = 5;
-    Fiesta.dryMass = 2034.2;
-    Fiesta.numberOfSeats = 5;
-    Fiesta.numberOfWheels = 4;
-    Fiesta.breakingRate = 4.4;
+    }
+
+};
+
+
+int main(){
+
+    // Initialisation of system
+    double averageHumanMass = 75; // kg
+    int simulationTime = 1000; // Seconds
+
+    space testingSpace{};
+    testingSpace.volume[0] = 1000;
+    testingSpace.volume[1] = 1000;
+    testingSpace.volume[2] = 1000;
+    testingSpace.surfaceFriction = 150; // Friction units
+
+    car Corsa{};
+    Corsa.numberOfSeats = 5;            // available people positions
+    Corsa.occupiedSeats = 3;            // people
+    Corsa.breakingForce_max = 1500;     // Newtons
+    Corsa.accelerationForce_max = 750;  // Newtons
+    Corsa.dryMass = 1000;               // kg
+
+    script simulationScript{};
+
+
+    for(int i = 0; i <= simulationTime; i++){
+        for (int j = 0; j <= 2; j++) {                   // Update position Inertial RF
+            Corsa.location[j] = Corsa.velocity[j] * 1;
+        }
+        if(simulationScript.accelerationEvent == true){
+            Corsa.accelerating = true;
+
+        }
+    }
 
 }
 
